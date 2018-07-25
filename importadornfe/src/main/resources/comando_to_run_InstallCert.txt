@@ -1,0 +1,1 @@
+java InstallCert homologação.nfe.sefazvirtual.rs.gov.br
