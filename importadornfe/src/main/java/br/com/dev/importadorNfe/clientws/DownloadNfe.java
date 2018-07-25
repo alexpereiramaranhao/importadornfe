@@ -36,7 +36,7 @@ import br.inf.portalfiscal.nfe.schema.retdistdfeint.RetDistDFeInt;
 import br.inf.portalfiscal.nfe.schema.retdistdfeint.RetDistDFeInt.LoteDistDFeInt.DocZip;
 
 /**
- * @author Danilo Rezende
+ * @author Alex Pereira Maranhão
  */
 public class DownloadNfe {
 
