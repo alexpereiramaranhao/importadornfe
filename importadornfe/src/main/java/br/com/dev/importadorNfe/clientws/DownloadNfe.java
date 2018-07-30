@@ -9,6 +9,7 @@ import br.inf.portalfiscal.nfe.schema.retdistdfeint.RetDistDFeInt;
 
 /**
  * @author Alex Pereira Maranhão
+ * 
  */
 public class DownloadNfe {
 
