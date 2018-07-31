@@ -175,168 +175,168 @@ public class UtilXML {
     return null;
   }
 
-//  public static String[] getNomeFuncaoXML() {
-//    String[] retorno = new String[3];
-//    TipoBanco tipoBanco = Banco.verificarAmbiente();
-//    File arquivo;
-//    if (tipoBanco == TipoBanco.PROD) {
-//      arquivo = new File("/opt/tomcat/conf/cert/ChavePrivada.key");
-//      retorno[0] = "/opt/tomcat/conf/cert/SANEAMENTODEGOIASSA.pfx";
-//      retorno[2] = "/opt/tomcat/conf/cert/Cacert-22-04-2018";
-//    } else {
-//      arquivo = new File("\\\\prod2\\certificado\\ChavePrivada.key");
-//      retorno[0] = "\\\\prod2\\certificado\\SANEAMENTODEGOIASSA.pfx";
-//      retorno[2] = "\\\\prod2\\certificado\\Cacert-22-04-2018";
-//    }
-//    try {
-//      BufferedReader bf = new BufferedReader(new FileReader(arquivo));
-//      retorno[1] = bf.readLine();
-//      bf.close();
-//    } catch (FileNotFoundException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
-//    // TODO Auto-generated method stub
-//    catch (IOException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
-//
-//    return retorno;
-//
-//  }
+  public static String[] getNomeFuncaoXML() {
+    String[] retorno = new String[3];
+    String tipoBanco = "homolog";
+    File arquivo;
+    if (tipoBanco.equals("homolog")) {
+      arquivo = new File("/home/alex/Desenvolvimento/servidores web/apache-tomcat-8.0.53/conf/cert/keycertificadomapahfull.key");
+      retorno[0] = "/home/alex/Desenvolvimento/servidores web/apache-tomcat-8.0.53/conf/cert/certificadomapahfull.pfx";
+      retorno[2] = "/opt/tomcat/conf/cert/Cacert-22-04-2018";
+    } else {
+      arquivo = new File("\\\\prod2\\certificado\\ChavePrivada.key");
+      retorno[0] = "\\\\prod2\\certificado\\SANEAMENTODEGOIASSA.pfx";
+      retorno[2] = "\\\\prod2\\certificado\\Cacert-22-04-2018";
+    }
+    try {
+      BufferedReader bf = new BufferedReader(new FileReader(arquivo));
+      retorno[1] = bf.readLine();
+      bf.close();
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    // TODO Auto-generated method stub
+    catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return retorno;
+
+  }
 
   /**
    * Inicializa dados da certifica��o a ser usada nas conex�es SSL com servidores da Receita Federal
    */
-//  public static void inicializarCertificacaoSSL() {
-//
-//    System.clearProperty("javax.net.ssl.keyStore");
-//    System.clearProperty("javax.net.ssl.keyStorePassword");
-//    System.clearProperty("javax.net.ssl.trustStore");
-//    System.clearProperty("javax.net.ssl.trustStorePassword");
-//
-//    String[] chave = UtilXML.getNomeFuncaoXML();
-//    System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
-//    System.setProperty("javax.net.ssl.keyStore", chave[0]);
-//    System.setProperty("javax.net.ssl.keyStorePassword", chave[1]);
-//
-//    System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-//    System.setProperty("javax.net.ssl.trustStore", chave[2]);
-//    // System.setProperty("javax.net.ssl.trustStorePassword", chave[1]);
-//    // System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-//
-//  }
+  public static void inicializarCertificacaoSSL() {
+
+    System.clearProperty("javax.net.ssl.keyStore");
+    System.clearProperty("javax.net.ssl.keyStorePassword");
+    System.clearProperty("javax.net.ssl.trustStore");
+    System.clearProperty("javax.net.ssl.trustStorePassword");
+
+    String[] chave = UtilXML.getNomeFuncaoXML();
+    System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
+    System.setProperty("javax.net.ssl.keyStore", chave[0]);
+    System.setProperty("javax.net.ssl.keyStorePassword", chave[1]);
+
+    System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+    System.setProperty("javax.net.ssl.trustStore", chave[2]);
+    // System.setProperty("javax.net.ssl.trustStorePassword", chave[1]);
+    // System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+
+  }
 
   /**
    * Realiza a Assinatura de um documento XML
    */
 
-//  public static String assinarSHA256(String xml, String tagSistema) {
-//    String[] lChave = UtilXML.getNomeFuncaoXML();
-//    String xmlAssinado = null;
-//    try {
-//      KeyStore ks = KeyStore.getInstance("PKCS12");
-//      ks.load(new FileInputStream(lChave[0]), lChave[1].toCharArray());
-//      KeyStore.PrivateKeyEntry keyEntry = (KeyStore.PrivateKeyEntry) ks.getEntry(ALIAS,
-//          new KeyStore.PasswordProtection(lChave[1].toCharArray()));
-//
-//      X509Certificate certificado = (X509Certificate) keyEntry.getCertificate();
-//
-//      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//      factory.setNamespaceAware(true);
-//      DocumentBuilder builder = factory.newDocumentBuilder();
-//      Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
-//      Node no = doc.getElementsByTagName(tagSistema).item(0);
-//
-//      // NodeList list = doc.getElementsByTagName(tagSistema);
-//      Element el = (Element) no.getChildNodes().item(1);// list.item(1);
-//      String referenceURI = "";
-//      if (tagSistema.equals(UtilXML.ESOCIAL)) {
-//        el.setIdAttribute("Id", true);
-//        referenceURI = el.getAttribute("Id");
-//      } else if (tagSistema.equals(REINF)) {
-//        el.setIdAttribute("id", true);
-//        referenceURI = el.getAttribute("id");
-//      }
-//      XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
-//      List<Transform> transformList = new ArrayList<>();
-//      transformList.add(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
-//      transformList
-//          .add(fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null));
-//
-//      Reference ref = fac.newReference("#" + referenceURI, fac.newDigestMethod(DigestMethod.SHA256, null),
-//          transformList, null, null);
-//
-//      SignedInfo si = fac.newSignedInfo(
-//          fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null),
-//          fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),
-//          Collections.singletonList(ref));
-//
-//      KeyInfoFactory kif = fac.getKeyInfoFactory();
-//      X509Data x509Data = kif.newX509Data(Collections.singletonList(certificado));
-//      KeyInfo ki = kif.newKeyInfo(Collections.singletonList(x509Data));
-//
-//      DOMSignContext dsc = new DOMSignContext(keyEntry.getPrivateKey(), el.getParentNode());
-//
-//      XMLSignature signature = fac.newXMLSignature(si, ki);
-//      signature.sign(dsc);
-//
-//      StreamResult streamResult = new StreamResult(new StringWriter());
-//      TransformerFactory tf = TransformerFactory.newInstance();
-//      Transformer trans = tf.newTransformer();
-//      trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-//      trans.setOutputProperty(OutputKeys.INDENT, "no");
-//      trans.transform(new DOMSource(doc), streamResult);
-//
-//      xmlAssinado = streamResult.getWriter().toString();
-//    } catch (KeyStoreException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (UnrecoverableEntryException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (ParserConfigurationException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (SAXException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (TransformerException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (MarshalException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (XMLSignatureException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    } catch (InvalidAlgorithmParameterException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
-//
-//    return xmlAssinado;
-///
-//  }
+  public static String assinarSHA256(String xml, String tagSistema) {
+    String[] lChave = UtilXML.getNomeFuncaoXML();
+    String xmlAssinado = null;
+    try {
+      KeyStore ks = KeyStore.getInstance("PKCS12");
+      ks.load(new FileInputStream(lChave[0]), lChave[1].toCharArray());
+      KeyStore.PrivateKeyEntry keyEntry = (KeyStore.PrivateKeyEntry) ks.getEntry(ALIAS,
+          new KeyStore.PasswordProtection(lChave[1].toCharArray()));
+
+      X509Certificate certificado = (X509Certificate) keyEntry.getCertificate();
+
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setNamespaceAware(true);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
+      Node no = doc.getElementsByTagName(tagSistema).item(0);
+
+      // NodeList list = doc.getElementsByTagName(tagSistema);
+      Element el = (Element) no.getChildNodes().item(1);// list.item(1);
+      String referenceURI = "";
+      if (tagSistema.equals(UtilXML.ESOCIAL)) {
+        el.setIdAttribute("Id", true);
+        referenceURI = el.getAttribute("Id");
+      } else if (tagSistema.equals(REINF)) {
+        el.setIdAttribute("id", true);
+        referenceURI = el.getAttribute("id");
+      }
+      XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
+      List<Transform> transformList = new ArrayList<>();
+      transformList.add(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
+      transformList
+          .add(fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null));
+
+      Reference ref = fac.newReference("#" + referenceURI, fac.newDigestMethod(DigestMethod.SHA256, null),
+          transformList, null, null);
+
+      SignedInfo si = fac.newSignedInfo(
+          fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null),
+          fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),
+          Collections.singletonList(ref));
+
+      KeyInfoFactory kif = fac.getKeyInfoFactory();
+      X509Data x509Data = kif.newX509Data(Collections.singletonList(certificado));
+      KeyInfo ki = kif.newKeyInfo(Collections.singletonList(x509Data));
+
+      DOMSignContext dsc = new DOMSignContext(keyEntry.getPrivateKey(), el.getParentNode());
+
+      XMLSignature signature = fac.newXMLSignature(si, ki);
+      signature.sign(dsc);
+
+      StreamResult streamResult = new StreamResult(new StringWriter());
+      TransformerFactory tf = TransformerFactory.newInstance();
+      Transformer trans = tf.newTransformer();
+      trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      trans.setOutputProperty(OutputKeys.INDENT, "no");
+      trans.transform(new DOMSource(doc), streamResult);
+
+      xmlAssinado = streamResult.getWriter().toString();
+    } catch (KeyStoreException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (UnrecoverableEntryException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ParserConfigurationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (SAXException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (TransformerException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (MarshalException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (XMLSignatureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (InvalidAlgorithmParameterException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return xmlAssinado;
+
+  }
 
   /**
    * Realiza a Assinatura de uma classe dos sistemas REINF e ESocial
    */
 
-//  public static <T> T assinarClasse(Class<T> classe, T objeto, String tagSistema) {
-//    String xml = UtilXML.serializarXML(objeto);
-//    // System.out.println(xml);
-//    xml = UtilXML.removerTagXMLVersion(xml);
-//    xml = UtilXML.removerTagNS2(xml);
-//    xml = UtilXML.assinarSHA256(xml, tagSistema);
-//    xml = UtilXML.removerTagNS2(xml);
-//    // System.out.println(xml);
-//    return desserializarXML(xml, classe);
-//  }
+  public static <T> T assinarClasse(Class<T> classe, T objeto, String tagSistema) {
+    String xml = UtilXML.serializarXML(objeto);
+    // System.out.println(xml);
+    xml = UtilXML.removerTagXMLVersion(xml);
+    xml = UtilXML.removerTagNS2(xml);
+    xml = UtilXML.assinarSHA256(xml, tagSistema);
+    xml = UtilXML.removerTagNS2(xml);
+    // System.out.println(xml);
+    return desserializarXML(xml, classe);
+  }
 
   public static String removerTagXMLVersion(String xml) {
     String retorno = xml.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "");
